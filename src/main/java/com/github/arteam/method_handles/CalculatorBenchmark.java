@@ -24,22 +24,22 @@ public class CalculatorBenchmark {
     private long number = 617214092523509L;
     private Calculator calculator = new Calculator(true, false, true, false);
 
-    @Benchmark
+    //@Benchmark
     public long test1() {
         return calculator.calculate1(number);
     }
 
-    @Benchmark
+    //@Benchmark
     public long test2() {
         return calculator.calculate2(number);
     }
 
-    @Benchmark
+    //@Benchmark
     public long test3() {
         return calculator.calculate3(number);
     }
 
-    @Benchmark
+    //@Benchmark
     public long test4() {
         return calculator.calculate4(number);
     }

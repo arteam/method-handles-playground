@@ -138,73 +138,29 @@ public class Calculator {
             if (subtraction) {
                 if (multiplication) {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result -= 2;
-                            result *= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(multiply(sub(add(number))));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result -= 2;
-                            result *= 2;
-                            return result;
-                        };
+                        return number -> multiply(sub(add(number)));
                     }
                 } else {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result -= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(sub(add(number)));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result -= 2;
-                            return result;
-                        };
+                        return number -> sub(add(number));
                     }
                 }
             } else {
                 if (multiplication) {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result *= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(multiply(add(number)));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result *= 2;
-                            return result;
-                        };
+                        return number -> multiply(add(number));
                     }
                 } else {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(add(number));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result += 5;
-                            return result;
-                        };
+                        return Calculator::add;
                     }
                 }
             }
@@ -212,62 +168,29 @@ public class Calculator {
             if (subtraction) {
                 if (multiplication) {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result -= 2;
-                            result *= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(multiply(sub(number)));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result -= 2;
-                            result *= 2;
-                            return result;
-                        };
+                        return number -> multiply(sub(number));
                     }
                 } else {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result -= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(sub(number));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result -= 2;
-                            return result;
-                        };
+                        return Calculator::sub;
                     }
                 }
             } else {
                 if (multiplication) {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result *= 2;
-                            result /= 4;
-                            return result;
-                        };
+                        return number -> div(multiply(number));
                     } else {
-                        return number -> {
-                            long result = number;
-                            result *= 2;
-                            return result;
-                        };
+                        return Calculator::multiply;
                     }
                 } else {
                     if (division) {
-                        return number -> {
-                            long result = number;
-                            result /= 4;
-                            return result;
-                        };
+                        return Calculator::div;
                     } else {
-                        return number -> number;
+                        return Calculator::add;
                     }
                 }
             }
