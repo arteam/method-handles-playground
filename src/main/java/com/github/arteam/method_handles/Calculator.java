@@ -19,7 +19,7 @@ public class Calculator {
     private final boolean division;
     private final LongUnaryOperator dynamicLambda;
     private final LongUnaryOperator manualLambda;
-    private final LongUnaryOperator manualUnroll;
+    private final LongUnaryOperator fsm;
 
     public Calculator(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
         this.addition = addition;
@@ -28,7 +28,7 @@ public class Calculator {
         this.division = division;
         this.dynamicLambda = dynamicLambda(addition, subtraction, multiplication, division);
         this.manualLambda = manualLambda(addition, subtraction, multiplication, division);
-        this.manualUnroll = manualUnroll(addition, subtraction, multiplication, division);
+        this.fsm = fsm(addition, subtraction, multiplication, division);
     }
 
     long calculate1(long number) {
@@ -64,7 +64,7 @@ public class Calculator {
     }
 
     long calculate5(long number) {
-        return manualUnroll.applyAsLong(number);
+        return fsm.applyAsLong(number);
     }
 
     private static long param(long l) {
@@ -133,67 +133,22 @@ public class Calculator {
         return result;
     }
 
-    private static LongUnaryOperator manualUnroll(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
-        if (addition) {
-            if (subtraction) {
-                if (multiplication) {
-                    if (division) {
-                        return number -> div(multiply(sub(add(number))));
-                    } else {
-                        return number -> multiply(sub(add(number)));
-                    }
-                } else {
-                    if (division) {
-                        return number -> div(sub(add(number)));
-                    } else {
-                        return number -> sub(add(number));
-                    }
-                }
-            } else {
-                if (multiplication) {
-                    if (division) {
-                        return number -> div(multiply(add(number)));
-                    } else {
-                        return number -> multiply(add(number));
-                    }
-                } else {
-                    if (division) {
-                        return number -> div(add(number));
-                    } else {
-                        return Calculator::add;
-                    }
-                }
-            }
-        } else {
-            if (subtraction) {
-                if (multiplication) {
-                    if (division) {
-                        return number -> div(multiply(sub(number)));
-                    } else {
-                        return number -> multiply(sub(number));
-                    }
-                } else {
-                    if (division) {
-                        return number -> div(sub(number));
-                    } else {
-                        return Calculator::sub;
-                    }
-                }
-            } else {
-                if (multiplication) {
-                    if (division) {
-                        return number -> div(multiply(number));
-                    } else {
-                        return Calculator::multiply;
-                    }
-                } else {
-                    if (division) {
-                        return Calculator::div;
-                    } else {
-                        return Calculator::add;
-                    }
-                }
-            }
-        }
+    private static LongUnaryOperator fsm(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
+        if (addition && subtraction && multiplication && division) return number -> div(multiply(sub(add(number))));
+        else if (addition && subtraction && multiplication) return number -> multiply(sub(add(number)));
+        else if (addition && subtraction && division) return number -> div(sub(add(number)));
+        else if (addition && subtraction) return number -> sub(add(number));
+        else if (addition && multiplication && division) return number -> div(multiply(add(number)));
+        else if (addition && multiplication) return number -> multiply(add(number));
+        else if (addition && division) return number -> div(add(number));
+        else if (addition) return Calculator::add;
+        else if (subtraction && multiplication && division) return number -> div(multiply(sub(number)));
+        else if (subtraction && multiplication) return number -> multiply(sub(number));
+        else if (subtraction && division) return number -> div(sub(number));
+        else if (subtraction) return Calculator::sub;
+        else if (multiplication && division) return number -> div(multiply(number));
+        else if (multiplication) return Calculator::multiply;
+        else if (division) return Calculator::div;
+        else return number -> number;
     }
 }
