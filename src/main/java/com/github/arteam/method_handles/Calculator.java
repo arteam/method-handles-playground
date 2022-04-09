@@ -19,6 +19,7 @@ public class Calculator {
     private final boolean division;
     private final LongUnaryOperator dynamicLambda;
     private final LongUnaryOperator manualLambda;
+    private final LongUnaryOperator manualUnroll;
 
     public Calculator(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
         this.addition = addition;
@@ -27,6 +28,7 @@ public class Calculator {
         this.division = division;
         this.dynamicLambda = dynamicLambda(addition, subtraction, multiplication, division);
         this.manualLambda = manualLambda(addition, subtraction, multiplication, division);
+        this.manualUnroll = manualUnroll(addition, subtraction, multiplication, division);
     }
 
     long calculate1(long number) {
@@ -59,6 +61,10 @@ public class Calculator {
 
     long calculate4(long number) {
         return manualLambda.applyAsLong(number);
+    }
+
+    long calculate5(long number) {
+        return manualUnroll.applyAsLong(number);
     }
 
     private static long param(long l) {
@@ -127,4 +133,144 @@ public class Calculator {
         return result;
     }
 
+    private static LongUnaryOperator manualUnroll(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
+        if (addition) {
+            if (subtraction) {
+                if (multiplication) {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result -= 2;
+                            result *= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result -= 2;
+                            result *= 2;
+                            return result;
+                        };
+                    }
+                } else {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result -= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result -= 2;
+                            return result;
+                        };
+                    }
+                }
+            } else {
+                if (multiplication) {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result *= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result *= 2;
+                            return result;
+                        };
+                    }
+                } else {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result += 5;
+                            return result;
+                        };
+                    }
+                }
+            }
+        } else {
+            if (subtraction) {
+                if (multiplication) {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result -= 2;
+                            result *= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result -= 2;
+                            result *= 2;
+                            return result;
+                        };
+                    }
+                } else {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result -= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result -= 2;
+                            return result;
+                        };
+                    }
+                }
+            } else {
+                if (multiplication) {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result *= 2;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> {
+                            long result = number;
+                            result *= 2;
+                            return result;
+                        };
+                    }
+                } else {
+                    if (division) {
+                        return number -> {
+                            long result = number;
+                            result /= 4;
+                            return result;
+                        };
+                    } else {
+                        return number -> number;
+                    }
+                }
+            }
+        }
+    }
 }

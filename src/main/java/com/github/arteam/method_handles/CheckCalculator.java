@@ -9,6 +9,7 @@ public class CheckCalculator {
         System.out.println(calculator.calculate1(number));
         System.out.println(calculator.calculate2(number));
         System.out.println(calculator.calculate4(number));
+        System.out.println(calculator.calculate5(number));
     }
 
 }

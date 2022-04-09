@@ -24,12 +24,12 @@ public class CalculatorBenchmark {
     private long number = 617214092523509L;
     private Calculator calculator = new Calculator(true, false, true, false);
 
-    //@Benchmark
+    @Benchmark
     public long test1() {
         return calculator.calculate1(number);
     }
 
-    // @Benchmark
+    @Benchmark
     public long test2() {
         return calculator.calculate2(number);
     }
@@ -39,9 +39,14 @@ public class CalculatorBenchmark {
         return calculator.calculate3(number);
     }
 
-    //@Benchmark
+    @Benchmark
     public long test4() {
-        return calculator.calculate3(number);
+        return calculator.calculate4(number);
+    }
+
+    @Benchmark
+    public long test5() {
+        return calculator.calculate5(number);
     }
 
     public static void main(String[] args) throws Exception {
