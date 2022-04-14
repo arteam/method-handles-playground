@@ -1,5 +1,9 @@
 package com.github.arteam.method_handles;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.MethodCall;
+import net.bytebuddy.matcher.ElementMatchers;
+
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -20,6 +24,7 @@ public class Calculator {
     private final LongUnaryOperator dynamicLambda;
     private final LongUnaryOperator manualLambda;
     private final LongUnaryOperator fsm;
+    private final LongUnaryOperator byteBuddy;
 
     public Calculator(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
         this.addition = addition;
@@ -29,6 +34,7 @@ public class Calculator {
         this.dynamicLambda = dynamicLambda(addition, subtraction, multiplication, division);
         this.manualLambda = manualLambda(addition, subtraction, multiplication, division);
         this.fsm = fsm(addition, subtraction, multiplication, division);
+        this.byteBuddy = byteBuddy(addition, subtraction, multiplication, division);
     }
 
     long calculate1(long number) {
@@ -67,23 +73,27 @@ public class Calculator {
         return fsm.applyAsLong(number);
     }
 
-    private static long param(long l) {
+    long calculate6(long number) {
+        return byteBuddy.applyAsLong(number);
+    }
+
+    public static long param(long l) {
         return l;
     }
 
-    private static long add(long l) {
+    public static long add(long l) {
         return l + 5;
     }
 
-    private static long sub(long l) {
+    public static long sub(long l) {
         return l - 2;
     }
 
-    private static long multiply(long l) {
+    public static long multiply(long l) {
         return l * 2;
     }
 
-    private static long div(long l) {
+    public static long div(long l) {
         return l / 4;
     }
 
@@ -150,5 +160,34 @@ public class Calculator {
         else if (multiplication) return Calculator::multiply;
         else if (division) return Calculator::div;
         else return number -> number;
+    }
+
+    private static LongUnaryOperator byteBuddy(boolean addition, boolean subtraction, boolean multiplication, boolean division) {
+        try {
+            MethodCall methodCall = MethodCall.invoke(Calculator.class.getDeclaredMethod("param", long.class)).withArgument(0);
+            if (addition) {
+                methodCall = MethodCall.invoke(Calculator.class.getDeclaredMethod("add", long.class)).withMethodCall(methodCall);
+            }
+            if (subtraction) {
+                methodCall = MethodCall.invoke(Calculator.class.getDeclaredMethod("sub", long.class)).withMethodCall(methodCall);
+            }
+            if (multiplication) {
+                methodCall = MethodCall.invoke(Calculator.class.getDeclaredMethod("multiply", long.class)).withMethodCall(methodCall);
+            }
+            if (division) {
+                methodCall = MethodCall.invoke(Calculator.class.getDeclaredMethod("div", long.class)).withMethodCall(methodCall);
+            }
+            return new ByteBuddy()
+                    .subclass(LongUnaryOperator.class)
+                    .method(ElementMatchers.named("applyAsLong").and(ElementMatchers.takesArguments(1)))
+                    .intercept(methodCall)
+                    .make()
+                    .load(Calculator.class.getClassLoader())
+                    .getLoaded()
+                    .getConstructor()
+                    .newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
